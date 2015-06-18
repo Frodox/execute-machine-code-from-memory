@@ -1,0 +1,49 @@
+policy_module(mem_test_exec, 1.0)
+
+gen_require(`
+    role user_r;
+    role unconfined_r;
+
+    type user_t;
+    type user_devpts_t;
+    type user_tty_device_t;
+	type user_tmpfs_t;
+	type unconfined_t;
+	type tmpfs_t;
+')
+
+type mem_test_t;
+type mem_test_exec_t;
+
+role user_r types mem_test_t;
+role unconfined_r types mem_test_t;
+
+application_domain(mem_test_t, mem_test_exec_t)
+domtrans_pattern(user_t, mem_test_exec_t, mem_test_t)
+domtrans_pattern(unconfined_t, mem_test_exec_t, mem_test_t)
+
+# rules ...
+allow mem_test_t user_devpts_t:chr_file { read write getattr };
+allow mem_test_t user_tty_device_t:chr_file { read write getattr ioctl};
+
+
+
+# asked for:
+# allow mmap
+# allow mem_test_t self:process execmem;
+
+# ?!
+# type=AVC msg=audit(1395317366.345:36593): avc:  denied  { execute } for  pid=9148 comm="mem-test" path=2F535953563561303038633735202864656C6574656429 dev=tmpfs ino=589837 scontext=user_u:user_r:mem_test_t:s0-s5 tcontext=user_u:object_r:user_tmpfs_t:s0 tclass=file
+
+# it allow shmget
+# allow mem_test_t user_tmpfs_t:file { read write execute };
+allow mem_test_t user_t:shm { unix_read unix_write read write associate };
+# shmget, (ftok)
+allow mem_test_t shell_exec_t:file getattr;
+allow mem_test_t tmpfs_t:filesystem getattr;
+
+
+# exec from heap: through mprotect syscall -> execmod perm
+# allow user_usertype user_home_type : file execmod ;
+
+# empty line:

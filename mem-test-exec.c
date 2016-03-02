@@ -1,7 +1,7 @@
 /******************************************************************************
 * Simple application that tries to execute machine code
 * from many different memory locations.
-* 
+*
 * original author:
 * https://github.com/ebobby/random-challenges-exercises
 * Francisco Soto <ebobby@ebobby.org>
@@ -49,15 +49,17 @@
 * it will end up in our data segment.
 *******************************************************************************/
 
-// just return exit code: 55
-// get from disassembling simple C-code.
+/* just return exit code: 55
+ * get from disassembling simple C-code.
+ * run `make` and `objdump -d asm.o`
+ */
 
 unsigned char code[] = {
-0x55,                           //    	push   %rbp
-0x48, 0x89, 0xe5,               //    	mov    %rsp,%rbp
-0xb8, 0x37, 0x00, 0x00, 0x00,   //    	mov    $0x37,%eax
-0xc9,                           //    	leaveq 
-0xc3                            //    	retq 
+0x55,                           //    push   %rbp
+0x48, 0x89, 0xe5,               //    mov    %rsp,%rbp
+0xb8, 0x37, 0x00, 0x00, 0x00,   //    mov    $0x37,%eax
+0xc9,                           //    leaveq
+0xc3                            //    retq
 };
 
 
@@ -83,11 +85,15 @@ void sigbus_handler (int sig) {
 }
 
 
+/*** DATA ***/
+
 /* Execute code off the data segment. */
 void execute_from_data_segment () {
     EXECUTE_FUNC("data segment", (unsigned long (*)()) code);
 }
 
+
+/*** BSS ***/
 
 /* Execute code off the bss segment. */
 void execute_from_bss_segment () {
@@ -107,7 +113,6 @@ void execute_from_stack () {
     EXECUTE_FUNC("stack", (unsigned long (*)()) stack_code);
 }
 
-
 /* make stack executable and exec */
 void execute_from_stack_exec ()
 {
@@ -117,7 +122,7 @@ void execute_from_stack_exec ()
 
 
     /* some dancing to make stack executable */
-    
+
     //  Find page size for this system.
     size_t pagesize = sysconf(_SC_PAGESIZE);
 
@@ -246,7 +251,6 @@ void execute_from_shm_open_exec ()
     munmap(ptr, mem_length);
     shm_unlink(mem_key);
 }
-
 
 /* shm_get with rw */
 void execute_from_shmget_rw()

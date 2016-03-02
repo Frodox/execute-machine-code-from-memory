@@ -1,6 +1,6 @@
 TARGET  = mem_test
 CFLAGS  = -Wall -Wextra --std=gnu99 -fpie -Wno-format
-LDFLAGS = -lrt -lselinux
+LDFLAGS = -lrt
 CC = gcc
 SOURCES=$(wildcard *.c )
 OBJECTS=$(SOURCES:.c=.o)

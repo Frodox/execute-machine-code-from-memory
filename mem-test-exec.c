@@ -29,7 +29,6 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/types.h>
-#include <selinux/selinux.h>
 #include <malloc.h>
 
 

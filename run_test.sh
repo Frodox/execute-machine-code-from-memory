@@ -46,7 +46,7 @@ FAIL - can't execute code from memory (it's good)
 """
 
 echo "==== bit: RW ===="
-# execstack -c "$TEST_CMD"
+execstack -c "$TEST_CMD"
 do_tests
 
 echo "==== bit: RWE ==== (mark binary as requiring executable stack)"

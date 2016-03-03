@@ -14,6 +14,21 @@ $ make
 $ ./run_test.sh
 ```
 
+## Description
+
+### types of memory
+
+* stack
+* heap (malloc)
+* file/heap (mmap)
+* shared memory (shmget)
+
+### permissions on memory
+
+* `rw` - allocate memory with read/write permissions
+* `rwx` - allocate memory with read/write/execute permissions
+* `rw-x` - allocate memory with read/write permissions and then manually change permissions to `rwx` with `mprotect` syscall
+
 ## Conceptual question
 
 
